@@ -134,11 +134,24 @@ client.on('message', msg => {
         let splits = trimMsg.split(" ");
         let row = 10, col = 10, mine = 10;
         if (splits.length === 2) {
-            row = splits[1];
+            mine = Number(splits[1]);
+            if (mine > (row * col - 10)) {
+                channel.send("?");
+                return;
+            }
         }
         if (splits.length === 3) {
-            row = splits[1];
-            col = splits[2];
+            row = Number(splits[1]);
+            col = Number(splits[2]);
+            if (mine > (row * col - 10)) {
+                channel.send("?");
+                return;
+            }
+        }
+        if (splits.length === 4) {
+            row = Number(splits[1]);
+            col = Number(splits[2]);
+            mine = Number(splits[3]);
             if (mine > (row * col - 10)) {
                 channel.send("?");
                 return;
@@ -146,17 +159,41 @@ client.on('message', msg => {
         }
         let generatedPosition = [];
         let field = [];
-        for (let i = 0; i < row; i++) {
+        for (let i = 0; i < row + 2; i++) {
             field[i] = [];
-            for (let j = 0; j < col; j++) {
+            for (let j = 0; j < col + 2; j++) {
                 field[i][j] = 0;
             }
         }
         while (mine > 0) {
-            let x = Math.floor(Math.random() * 10);
-            let y = Math.floor(Math.random() * 10);
+            let x = Math.floor(Math.random() * 10) + 1;
+            let y = Math.floor(Math.random() * 10) + 1;
             if (generatedPosition.indexOf(x + "#" + y) === -1) {
-                field[x][y] = 1;
+                field[x][y] = "*";
+                if (field[x - 1][y - 1] !== "*") {
+                    field[x - 1][y - 1]++;
+                }
+                if (field[x - 1][y] !== "*") {
+                    field[x - 1][y]++;
+                }
+                if (field[x - 1][y + 1] !== "*") {
+                    field[x - 1][y + 1]++;
+                }
+                if (field[x][y - 1] !== "*") {
+                    field[x][y - 1]++;
+                }
+                if (field[x][y + 1] !== "*") {
+                    field[x][y + 1]++;
+                }
+                if (field[x + 1][y - 1] !== "*") {
+                    field[x + 1][y - 1]++;
+                }
+                if (field[x + 1][y] !== "*") {
+                    field[x + 1][y]++;
+                }
+                if (field[x + 1][y + 1] !== "*") {
+                    field[x + 1][y + 1]++;
+                }
                 generatedPosition.push(x + "#" + y);
                 mine--;
             }
@@ -165,10 +202,37 @@ client.on('message', msg => {
         for (let i = 0; i < row; i++) {
             for (let j = 0; j < col; j++) {
                 sendMessage += "||";
-                if (field[i][j] === 0) {
-                    sendMessage += ":zero:";
-                } else {
-                    sendMessage += ":one:";
+                switch (field[i][j]) {
+                    case "*":
+                        sendMessage += ":boom:";
+                        break;
+                    case 0:
+                        sendMessage += ":zero:";
+                        break;
+                    case 1:
+                        sendMessage += ":one:";
+                        break;
+                    case 2:
+                        sendMessage += ":two:";
+                        break;
+                    case 3:
+                        sendMessage += ":three:";
+                        break;
+                    case 4:
+                        sendMessage += ":four:";
+                        break;
+                    case 5:
+                        sendMessage += ":five:";
+                        break;
+                    case 6:
+                        sendMessage += ":six:";
+                        break;
+                    case 7:
+                        sendMessage += ":seven:";
+                        break;
+                    case 8:
+                        sendMessage += ":eight:";
+                        break;
                 }
                 sendMessage += "||";
             }
