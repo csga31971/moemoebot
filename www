@@ -1,0 +1,216 @@
+#!/usr/bin/env node
+
+const config = require('./config.json');
+const Discord = require('discord.js');
+const https = require('https');
+const client = new Discord.Client();
+const originalList = ["苍蓝星", "aibo", "搔鸟", "毒妖鸟", "土砂龙", "泥鱼龙", "飞雷龙", "蛮颚龙", "雌火龙", "眩鸟", "浮空龙", "骨锤龙", "风飘龙", "惨爪龙", "火龙", "角龙", "麒麟", "大贼龙", "痹贼龙", "岩贼龙", "熔山龙", "熔岩龙", "爆锤龙", "爆鳞龙", "钢龙", "尸套龙", "冥灯龙", "恐暴龙", "灭尽龙", "黑角龙", "苍火龙", "樱火龙", "炎王龙", "炎妃龙", "绚辉龙", "贝希摩斯", "鹿首精",];
+const todayPlayList = ["摸了", "y", "搔鸟", "毒妖鸟", "土砂龙", "泥鱼龙", "飞雷龙", "蛮颚龙", "雌火龙", "眩鸟", "浮空龙", "骨锤龙", "风飘龙", "惨爪龙", "火龙", "角龙", "麒麟", "大贼龙", "岩贼龙", "大痹贼龙", "熔山龙", "熔岩龙", "爆锤龙", "爆鳞龙", "钢龙", "尸套龙", "冥灯龙", "恐暴龙", "灭尽龙", "黑角龙", "苍火龙", "樱火龙", "炎王龙", "炎妃龙", "绚辉龙", "贝希摩斯", "鹿首精",];
+const iceborne = ["冰牙龙", "冰鱼龙", "猛牛龙", "迅龙", "轰龙", "斩龙", "碎龙", "霜翼风飘龙", "冰呪龙", "溟波龙", "水妖鸟", "浮眠龙", "痹毒龙", "雷颚龙", "凶爪龙", "黑狼鸟", "雷狼龙", "硫斩龙", "歼世灭尽龙", "红莲爆鳞龙", "惶怒恐暴龙", "雾障尸套龙", "战痕黑狼鸟", "金狮子", "金火龙", "银火龙", "天地煌啼龙", "狱狼龙", "冥赤龙", "金狮子", "激昂金狮子", "猛爆碎龙",];
+const monsterList = originalList.concat(iceborne);
+const monsterTranslation = {
+    "Barroh": "土砂龙",
+    "Deviljho": "恐暴龙",
+    "Radobaan": "骨锤龙",
+    "Uragaan": "爆锤龙",
+    "Anjanath": "蛮颚龙",
+    "Great Girros": "大凶颚龙",
+    "Great Jagras": "大贼龙",
+    "Dodogama": "岩贼龙",
+    "Tobi-Kadachi": "飞雷龙",
+    "Odogaron": "惨爪龙",
+    "Rathalos": "火龙",
+    "Diablos": "角龙",
+    "Legiana": "风飘龙",
+    "Paolumu": "浮空龙",
+    "Black Diablos": "黑角龙",
+    "Rathian": "雌火龙",
+    "Azure Rathalos": "苍火龙",
+    "Bazelgeuse": "爆鳞龙",
+    "Pink Rathian": "樱火龙",
+    "Kirin": "麒麟",
+    "Teostra": "炎王龙",
+    "Vaal Hazak": "尸套龙",
+    "Xeno jiiva": "冥灯龙",
+    "Nergigante": "灭尽龙",
+    "Kushala Daora": "钢龙",
+    "Jyuratodus": "泥鱼龙",
+    "Lavasioth": "溶岩龙",
+    "Pukei-Pukei": "毒妖鸟",
+    "Tzitzi-Ya-Ku": "眩鸟",
+    "Kulu-Ya-Ku": "搔鸟"
+};
+
+client.login(config.token).catch((e) => {
+    console.log("ERRRRRRRRRRRRRRRR");
+});
+client.on('ready', () => {
+    console.log(`Logged in as ${client.user.tag}!`);
+    client.channels
+        .fetch("267506592977649675")
+        .then(channel => channel.send("我又好了"));
+    client.user.setActivity("苍蓝星");
+});
+
+client.on('message', msg => {
+    let content = msg.content;
+    let channel = msg.channel;
+    console.log(content);
+    if (content === 'ping') {
+        let receiveTime = new Date();
+        msg.reply('Pong!')
+            .then(() => {
+                channel.send(`elapsed time: ${new Date() - receiveTime}ms`);
+            })
+            .catch(console.error);
+    }
+    if (content === 'y') {
+        channel.send("嘶哈嘶哈");
+    }
+    if (msg.mentions.users.has(client.user.id)) {
+        channel.send("哦");
+        client.user.setActivity(msg.author.username);
+        if (content.indexOf("龙") > -1 && (content.indexOf("?") > -1 || content.indexOf("？") > -1)) {
+            msg.reply("认识你的美？");
+        }
+    }
+    if (content === 'monsterlist') {
+        channel.send(JSON.stringify(monsterList));
+    }
+    if (content === '今天打什么') {
+        let random = Math.round(Math.random() * todayPlayList.length);
+        msg.reply(todayPlayList[random]);
+    }
+    const emojiReg = /<\w?:\w+:\d{18}>/g;
+    let matches = content.match(emojiReg);
+    if (matches) {
+        for (let index in matches) {
+            let match = matches[index];
+            let snowflake = match.substr(match.length - 19, 18);
+            let emoji = client.emojis.resolve(snowflake);
+            if (emoji) {
+                msg.react(client.emojis.resolve(snowflake));
+            }
+        }
+    }
+    let trimMsg = content.replace(/\s+/, " ");
+    if (trimMsg.startsWith("play ")) {
+        let name = trimMsg.substr(trimMsg.indexOf(" ") + 1);
+        if (name && !/\s+/.test(name)) {
+            client.user.setActivity(name);
+        } else {
+            client.user.setActivity(msg.author.username);
+        }
+    }
+    if (trimMsg.startsWith("mtr ")) {
+        let name = trimMsg.substr(trimMsg.indexOf(" ") + 1);
+        if (name && !/^\s+$/.test(name)) {
+            channel.send(monsterTranslation[name]);
+        }
+    }
+    if (trimMsg.startsWith("osu ")) {
+        let userName = trimMsg.substr(trimMsg.indexOf(" ") + 1);
+        if (userName && !/^\s+$/.test(userName)) {
+            https.get("https://osu.ppy.sh/api/get_user?k=" + config.apikey + "&u=" + userName, (res) => {
+                let fullRes = "";
+                res.on("data", (data) => {
+                    fullRes += data;
+                });
+                res.on('end', () => {
+                    try {
+                        if (fullRes.length > 4) {
+                            channel.send("有有有");
+                        } else {
+                            channel.send("么得");
+                        }
+                    } catch (e) {
+                        console.error(e.message);
+                    }
+                });
+            });
+        }
+    }
+    if (trimMsg.startsWith("minesweeper")) {
+        let splits = trimMsg.split(" ");
+        let row = 10, col = 10, mine = 10;
+        if (splits.length === 2) {
+            row = splits[1];
+        }
+        if (splits.length === 3) {
+            row = splits[1];
+            col = splits[2];
+            if (mine > (row * col - 10)) {
+                channel.send("?");
+                return;
+            }
+        }
+        let generatedPosition = [];
+        let field = [];
+        for (let i = 0; i < row; i++) {
+            field[i] = [];
+            for (let j = 0; j < col; j++) {
+                field[i][j] = 0;
+            }
+        }
+        while (mine > 0) {
+            let x = Math.floor(Math.random() * 10);
+            let y = Math.floor(Math.random() * 10);
+            if (generatedPosition.indexOf(x + "#" + y) === -1) {
+                field[x][y] = 1;
+                generatedPosition.push(x + "#" + y);
+                mine--;
+            }
+        }
+        let sendMessage = "";
+        for (let i = 0; i < row; i++) {
+            for (let j = 0; j < col; j++) {
+                sendMessage += "||";
+                if (field[i][j] === 0) {
+                    sendMessage += ":zero:";
+                } else {
+                    sendMessage += ":one:";
+                }
+                sendMessage += "||";
+            }
+            sendMessage += "\n";
+        }
+        channel.send(sendMessage);
+    }
+});
+
+client.on('messageReactionAdd', (reaction, user) => {
+    if (!reaction.me) {
+        reaction.message.react(reaction.emoji);
+    }
+});
+
+client.on('messageReactionRemove', (reaction, user) => {
+    if (reaction.me) {
+        reaction.remove();
+    }
+});
+
+// let timer = setInterval(function(){
+//     let hour = new Date().getHours();
+//     if(hour >= 17){
+//         clearInterval(timer);
+//         client.channels.get("267506592977649675").send("<@267660207398584321> <@277019162684030976> <@233242196613136395> 不许下班");
+//         client.channels.get("267506592977649675").send({
+//             files: [{
+//                 attachment: 'D:\\workspace\\moemoebot\\bin\\pic.jpg',
+//                 name: 'pic.jpg'
+//             }]
+//         });
+//     }
+// }, 60000);
+
+let activityTimer = setInterval(function () {
+    let random = Math.round(Math.random() * monsterList.length);
+    let random2 = Math.random();
+    if (random2 < 0.05) {
+        client.user.setActivity("历战" + monsterList[random]);
+    } else {
+        client.user.setActivity(monsterList[random]);
+    }
+}, 60000);
+
