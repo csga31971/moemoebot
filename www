@@ -166,8 +166,8 @@ client.on('message', msg => {
             }
         }
         while (mine > 0) {
-            let x = Math.floor(Math.random() * 10) + 1;
-            let y = Math.floor(Math.random() * 10) + 1;
+            let x = Math.floor(Math.random() * row) + 1;
+            let y = Math.floor(Math.random() * col) + 1;
             if (generatedPosition.indexOf(x + "#" + y) === -1) {
                 field[x][y] = "*";
                 if (field[x - 1][y - 1] !== "*") {
