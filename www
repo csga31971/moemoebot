@@ -207,7 +207,7 @@ client.on('message', msg => {
                         sendMessage += ":boom:";
                         break;
                     case 0:
-                        sendMessage += ":zero:";
+                        sendMessage += ":blue_square:";
                         break;
                     case 1:
                         sendMessage += ":one:";
