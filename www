@@ -198,10 +198,45 @@ client.on('message', msg => {
                 mine--;
             }
         }
+        if (field.some(0)){
+           let count = Math.floor(Math.random() * field.filter(0)) + 1;
+           for (let x=0,y=0;;x++){
+               if(field[x] == 0){
+                   y++;
+            }
+            if(y == count){
+                field[x] = 10;
+                break;
+            }
+           }
+        }
         let sendMessage = "";
         for (let i = 1; i < row + 1; i++) {
             for (let j = 1; j < col + 1; j++) {
-                sendMessage += "||";
+                if (field[i][j] >= 9 || field[i][j] != "*"){//进入spoiler mode或no spoiler mode
+                sendMessage += ":blue_square:";
+/*            switch (field[i][j]) {
+                    case 10:
+                        sendMessage += ":blue_square:";
+                        break;
+                    case 11:
+                        sendMessage += ":one:";
+                        break;
+                    case 12:
+                        sendMessage += ":two:";
+                        break;
+                    case 13:
+                        sendMessage += ":three:";
+                        break;
+                    case 14:
+                        sendMessage += ":four:";
+                        break;
+                    case 15:
+                        sendMessage += ":five:";
+                        break;
+                }*/
+                }else{
+                    sendMessage += "||";
                 switch (field[i][j]) {
                     case "*":
                         sendMessage += ":boom:";
