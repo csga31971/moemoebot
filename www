@@ -198,46 +198,87 @@ client.on('message', msg => {
                 mine--;
             }
         }
-        let sendMessage = "";
-        for (let i = 1; i < row + 1; i++) {
-            for (let j = 1; j < col + 1; j++) {
-                sendMessage += "||";
-                switch (field[i][j]) {
-                    case "*":
-                        sendMessage += ":boom:";
-                        break;
-                    case 0:
-                        sendMessage += ":blue_square:";
-                        break;
-                    case 1:
-                        sendMessage += ":one:";
-                        break;
-                    case 2:
-                        sendMessage += ":two:";
-                        break;
-                    case 3:
-                        sendMessage += ":three:";
-                        break;
-                    case 4:
-                        sendMessage += ":four:";
-                        break;
-                    case 5:
-                        sendMessage += ":five:";
-                        break;
-                    case 6:
-                        sendMessage += ":six:";
-                        break;
-                    case 7:
-                        sendMessage += ":seven:";
-                        break;
-                    case 8:
-                        sendMessage += ":eight:";
-                        break;
-                }
-                sendMessage += "||";
+        if (field.some(0)){
+           let count = Math.floor(Math.random() * field.filter(0)) + 1;
+           let y = 0;
+           for (let i=0;i<=row;i++){
+               for (let j=0;j<=col;j++){
+                   if(field[i][j] == 0){
+                   y++;
+                if(y == count){
+                field[i][j] = 10;
+                break;
             }
-            sendMessage += "\n";
+                }
+           }
         }
+        }
+for(let z=0,let count=0,let y=0;z<=row;z++){
+    if (field[z].includes(0)){
+        console.log("goddamn");
+        count = Math.floor(Math.random() * field[z].find("0")) + 1;
+        y= 0;
+        for (let i=0;i<=row;i++){
+            for (let j=0;j<=col;j++){
+                if(field[i][j] == 0){
+                    y++;
+                    if(y == count){
+                        field[i][j] = 10;
+                        break;
+                    }
+                }
+            }
+            if(y == count){
+                field[i][j] = 10;
+                break;
+            }
+        }
+    }
+}
+let sendMessage = "";
+for (let i = 1; i < row + 1; i++) {
+    for (let j = 1; j < col + 1; j++) {
+    if (field[i][j] == 10){//进入spoiler mode或no spoiler mode
+        sendMessage += ":blue_square:";
+    }else{
+        sendMessage += "||";
+        switch (field[i][j]) {
+            case "*":
+                sendMessage += ":boom:";
+                break;
+            case 0:
+                sendMessage += ":zero:";
+                break;
+            case 1:
+                sendMessage += ":one:";
+                break;
+            case 2:
+                sendMessage += ":two:";
+                break;
+            case 3:
+                sendMessage += ":three:";
+                break;
+            case 4:
+                sendMessage += ":four:";
+                break;
+            case 5:
+                sendMessage += ":five:";
+                break;
+            case 6:
+                sendMessage += ":six:";
+                break;
+            case 7:
+                sendMessage += ":seven:";
+                break;
+            case 8:
+                sendMessage += ":eight:";
+                break;
+        }
+        sendMessage += "||";
+    }
+    }
+    sendMessage += "\n";
+}
         channel.send(sendMessage);
     }
 });
